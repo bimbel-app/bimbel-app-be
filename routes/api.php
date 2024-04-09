@@ -23,13 +23,17 @@ use App\Http\Controllers\TentorController;
 // });
 Route::post("register", [UserController::class,"register"]);
 Route::post("login", [UserController::class,"login"]);
+Route::post("add_user", [UserController::class,"add_user"]);
 
-Route::prefix('siswa')->group(function(){
-    Route::get("index", [SiswaController::class,"siswatampil"]);
-    Route::get("index/{id}", [SiswaController::class,"siswatampilbyid"]);
-    Route::post("add", [SiswaController::class,"siswatambah"]);
-    Route::post("edit/{id}", [SiswaController::class,"siswaedit"]);
-    Route::delete("delete/{id}", [SiswaController::class,"siswahapus"]);
+
+Route::middleware('jwt.auth')->group(function(){
+
+    Route::prefix('siswa')->group(function(){
+        Route::get("index", [SiswaController::class,"siswatampil"]);
+        Route::get("index/{id}", [SiswaController::class,"siswatampilbyid"]);
+        Route::post("add", [SiswaController::class,"siswatambah"]);
+        Route::post("edit/{id}", [SiswaController::class,"siswaedit"]);
+        Route::delete("delete/{id}", [SiswaController::class,"siswahapus"]);
 });
 Route::prefix('tentor')->group(function(){
     Route::get("index", [TentorController::class,"tentortampil"]);
@@ -53,6 +57,5 @@ Route::prefix('mapel')->group( function(){
     Route::post("add", [MapelController::class,"mapeltambah"]);
     Route::post("edit/{id}", [MapelController::class,"mapeledit"]);
     Route::delete("delete/{id}", [MapelController::class,"mapelhapus"]); 
-}
-
-);
+});
+});

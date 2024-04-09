@@ -70,4 +70,40 @@ class UserController extends Controller
             'token'   => $token   
         ], 200);    
     }
+
+    public function add_user (Request $request){
+        $valid = Validator::make($request->all(), [
+            'name' => 'required',
+            'username'=>'required',
+            'email' => 'required|email|unique:users',
+            'phoneNumber'=>'required',
+            'password' => 'required|min:8|confirmed',
+            'role'=>'requiered|in:admin, user'
+            ]);
+            
+            if($valid->fails()){
+                return response ()->json($valid->errors(), 422);
+            }
+
+        $admin = User::create([
+            'name'=> $request->name,
+            'username'=>$request->username,
+            'email'=> $request->email,
+            'phone_number'=>$request->phoneNumber,
+            'password'=> bcrypt($request->password),
+            'email_verified_at' => Carbon::now(),
+            'role'=> $request->role
+        ]);
+        
+        if($admin){
+            return response()->json([
+                'success'=> true,
+                $admin
+            ], 201);
+        }
+
+        return response()->json([
+            'success'=> false,
+        ], 409);
+    }
 }
